@@ -1,0 +1,41 @@
+{
+  "name": "kioskuicomponents",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/kioskuicomponents.es.js",
+  "exports": {
+    ".": "./dist/kioskuicomponents.es.js"
+  },
+  "types": "types/kioskuicomponents.d.ts",
+  "author": "Lutz Klein",
+  "license": "AGPL-3.0",
+  "prettier": {
+    "semi": true,
+    "trailingComma": "all",
+    "singleQuote": false,
+    "printWidth": 120,
+    "tabWidth": 4
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vaadin/dialog": "^24.3.6",
+    "@vaadin/grid": "^24.3.6",
+    "kiosktsapplib": "file:../../kiosktsapplib",
+    "lit": "^3.1.2"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "rollup-plugin-copy": "^3.5.0",
+    "sass": "^1.70.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3",
+    "vite": "^5.1.1",
+    "vite-plugin-dts": "^3.7.2",
+    "vite-plugin-html": "^3.2.2"
+  }
+}

@@ -1,8 +1,6 @@
-# 💼 The Office
+# 📦 Kiosk Context Selector Component
  
-## 🤸🏿👽🕵️ This repository is for people 🤸🤖🎅
-
-No matter for which field-project or which part of the software, it is here and only here in this repository where we all collaborate, report bugs and ideas, discuss ...
+Provides a UI to select a context in Kiosk
 
 ## typical workplaces
 - 🧪 [testers work here](https://github.com/arch-kiosk/arch-kiosk-office/projects/25)

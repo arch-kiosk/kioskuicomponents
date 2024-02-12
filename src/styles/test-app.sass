@@ -1,0 +1,133 @@
+@import reset
+@import "../../../../server/kiosk/kiosk/static/styles/_constants"
+@import icons
+
+\:host
+  display: grid
+  width: 100%
+  height: 100%
+  //min-width: 100%
+  //min-height: 100%
+  grid-template-rows: auto 1fr
+div, p
+  font-family: $standard-text
+
+.dev-tool-bar
+  background-color: $col-bg-att
+  display: flex
+  flex-direction: row
+  align-items: center
+  height: 38px
+  & > label:first-child
+    display: block
+    width: auto
+    white-space: nowrap
+  button
+    margin: 0px .5rem
+    width: 40px
+    height: 32px
+    font-size: 12px
+    font-weight: normal
+.dev-open-identifier
+  display: inline-block
+  padding: 0 1em
+  margin: 0 5px
+  background-color: $col-bg-att-darker
+  &:hover
+    background-color: $col-bg-att-lighter
+  &:active
+    background-color: $col-bg-ack
+.dev-open-identifier-input
+  max-width: 10em
+
+.center-div
+  display: flex
+  flex-direction: column
+  align-items: center
+  background: $col-bg-body
+
+.wait-for-login
+  display: grid
+  place-items: center
+  height: 100vh
+  background-color: $col-bg-body
+
+  p
+    font-family: $headline-text
+    font-size: $font-size-h2
+
+.logged-in-message
+  background-color: $col-bg-ack
+  color: $col-primary-bg-ack
+  display: grid
+  place-items: center
+  font-family: $standard-text
+
+.development
+  background-color: darkred
+  color: white
+  font-family: "Courier New", sans-serif
+  font-size: 18px
+  text-align: center
+
+.app-frame
+  height: 100%
+  width: 100%
+  background-color: unset
+
+.dialog-image-icon
+  font-size: $font-size-h2
+  margin-right: .5em
+  display: flex
+  place-items: center
+  width: 100%
+  height: 100%
+
+.toolbar
+  height: 3em
+  background: $col-bg-3
+  display: flex
+  flex-direction: row
+  justify-content: space-between
+  padding: 0
+
+.toolbar-section
+  height: 100%
+  display: flex
+  flex-direction: row
+  align-items: center
+  padding-left: 1em
+
+#toolbar-left
+  @extend .toolbar-section
+  flex-grow: 1
+  border-right: 1px solid $col-bg-body
+.toolbar-buttons
+  @extend .toolbar-section
+  background-color: $col-bg-3-darker
+
+.splitter
+  height: 8px
+  background-color: $col-bg-body
+
+.toolbar-button
+  color: $col-primary-bg-3
+  height: 28px
+  border: None
+  i
+    font-size: 28px
+    line-height: 100%
+    &:hover
+      color: $col-bg-att!important
+    &:active
+      color: $col-bg-ack!important
+    &.disabled
+      opacity: 0.3
+
+.toolbar-button.selected
+  //background-color: $col-bg-3-lighter
+  color: $col-accent-bg-3
+
+#dialog1
+  --col-bg-1: var(--col-bg-2)
+  --col-accent-bg-1: red

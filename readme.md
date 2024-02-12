@@ -1,6 +1,6 @@
-# 📦 Kiosk Context Selector Component
+# 📦 Kiosk Front End Component Library
  
-Provides a UI to select a context in Kiosk
+Provides WebComponents for Kiosk Front End Apps.
 
 ## typical workplaces
 - 🧪 [testers work here](https://github.com/arch-kiosk/arch-kiosk-office/projects/25)

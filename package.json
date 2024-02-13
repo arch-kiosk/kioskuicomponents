@@ -25,7 +25,7 @@
   "dependencies": {
     "@vaadin/dialog": "^24.3.6",
     "@vaadin/grid": "^24.3.6",
-    "kiosktsapplib": "file:../../kiosktsapplib",
+    "kiosktsapplib": "file:../kiosktsapplib",
     "lit": "^3.1.2"
   },
   "devDependencies": {

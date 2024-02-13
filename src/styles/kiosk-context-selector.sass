@@ -1,0 +1,39 @@
+@import reset
+@import "../../../server/kiosk/kiosk/static/styles/_constants"
+@import "../../../server/kiosk/kiosk/static/styles/very_basics"
+@import icons
+
+div, p
+  font-family: $standard-text
+
+\:host
+  --lumo-font-size-s: $font-size-standard
+  --_lumo-grid-secondary-border-color: $col-bg-2-lighter
+  --_lumo-grid-border-width: 5px
+  --lumo-font-family: $standard-text
+  --lumo-size-m: $font-size-standard
+
+vaadin-grid
+  margin-top: .5em
+  background-color: $col-bg-2
+  --_lumo-grid-selected-row-color: var(--col-bg-2-darker)
+
+vaadin-grid::part(cell)
+  padding-left: .5em
+  padding-top: 3px
+  padding-bottom: 3px
+  background-color: $col-bg-2
+
+vaadin-grid::part(header-cell)
+  min-height: auto
+  padding-top: .2em
+  padding-bottom: .2em
+  border-bottom-color: $col-bg-2-darker
+  border-bottom-width: 2px
+  background-color: $col-bg-2-darker
+
+vaadin-grid::part(row)
+  background-color: $col-bg-2
+  color: $col-primary-bg-2
+vaadin-grid::part(selected-row)
+  color: $col-accent-bg-2

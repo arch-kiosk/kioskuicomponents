@@ -30,8 +30,9 @@ export class KioskDialog extends LitElement {
         if (dialog) dialog.close(returnValue)
     }
 
-    _overlayClicked() {
-        this.closeDialog()
+    _overlayClicked(e: PointerEvent) {
+        if (e.target == this.shadowRoot?.querySelector(".dialog-outer-zone"))
+            this.closeDialog()
     }
 
     _onCloseDialog() {
@@ -57,7 +58,7 @@ export class KioskDialog extends LitElement {
                             <div class="dialog-name">
                                 <h3 class="dialog-title">${this.heading}</h3>
                             </div>
-                            <div class="close-button">
+                            <div class="close-button" @click="${this.closeDialog}">
                                 <i class="fa"></i>
                             </div>
                         </div>

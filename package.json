@@ -3,9 +3,9 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "main": "dist/kioskuicomponents.es.js",
+  "main": "kioskuicomponents.ts",
   "exports": {
-    ".": "./dist/kioskuicomponents.es.js"
+    ".": "./kioskuicomponents.ts"
   },
   "types": "types/kioskuicomponents.d.ts",
   "author": "Lutz Klein",

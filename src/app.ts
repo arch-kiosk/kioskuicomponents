@@ -50,7 +50,7 @@ export class TestApp extends KioskApp {
             // handleFetchError(msg)
             handleCommonFetchErrors(this, e, "loadConstants");
         });
-        }
+    }
 
     connectedCallback() {
         super.connectedCallback();

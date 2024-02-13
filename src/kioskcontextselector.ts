@@ -13,7 +13,7 @@ import {
 } from "kiosktsapplib";
 import { registerStyles } from "@vaadin/vaadin-themable-mixin/register-styles.js";
 import "./kioskdialog.ts";
-import { KioskDialog } from "./kioskdialog.ts";
+import { KioskDialog } from "./kioskdialog";
 import { AnyDict } from "kiosktsapplib";
 import { GridActiveItemChangedEvent } from "@vaadin/grid";
 import { columnBodyRenderer, GridColumnBodyLitRenderer } from "@vaadin/grid/lit";

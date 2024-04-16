@@ -99,7 +99,7 @@ export class TestApp extends KioskApp {
 
     // apiRender is only called once the api is connected.
     apiRender() {
-        let dev: TemplateResult | typeof nothing = html``;
+        let dev: TemplateResult | typeof nothing;
         // @ts-ignore
         if (import.meta.env.DEV) {
             dev = html`

@@ -1,3 +1,5 @@
 export * from "@vaadin/grid"
+export * from "@vaadin/combo-box"
 export * from "./src/kioskcontextselector"
 export * from "./src/kioskdialog"
+export * from "./src/kiosktzcombobox"

@@ -23,19 +23,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@vaadin/dialog": "^24.3.6",
-    "@vaadin/grid": "^24.3.6",
+    "@vaadin/combo-box": "^24.4.4",
+    "@vaadin/dialog": "^24.4.4",
+    "@vaadin/grid": "^24.4.4",
+    "dexie": "^4.0.8",
     "kiosktsapplib": "file:../kiosktsapplib",
-    "lit": "^3.1.2"
+    "lit": "^3.1.4"
   },
   "devDependencies": {
-    "prettier": "^3.2.5",
+    "prettier": "^3.3.3",
     "rollup-plugin-copy": "^3.5.0",
-    "sass": "^1.70.0",
+    "sass": "^1.77.8",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3",
-    "vite": "^5.1.1",
-    "vite-plugin-dts": "^3.7.2",
+    "typescript": "^5.5.4",
+    "vite": "^5.3.4",
+    "vite-plugin-dts": "^2.3.0",
     "vite-plugin-html": "^3.2.2"
   }
 }

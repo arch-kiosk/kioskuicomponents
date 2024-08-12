@@ -6,7 +6,12 @@ export default defineConfig(({ command, mode }) => {
     const env = loadEnv(mode, "env");
     return {
         plugins: [
-            createHtmlPlugin(),
+            createHtmlPlugin({
+                inject: {
+                    ...env,
+                },
+
+            }),
             // copy({
             //   targets: [ { src: '../../kioskfilemakerworkstationplugin/static/kioskfilemakerworkstation.css',
             //     dest:'./kioskfilemakerworkstation/static'
@@ -26,13 +31,14 @@ export default defineConfig(({ command, mode }) => {
                 : {},
         build: {
             outDir: "./dist",
-            lib: {
-                entry: "src/app.ts",
+             lib: {
+                entry: "./kioskuicomponents.ts",
                 formats: ["es"],
             },
             // rollupOptions: {
-            //   external: /^lit/,
-            // },
+            //     external: [/^lit/]
+            //   // external: [/^lit/, /@vaadin.*/]
+            // }
         },
         server: {
             fs: {
@@ -41,11 +47,6 @@ export default defineConfig(({ command, mode }) => {
                 allow: [searchForWorkspaceRoot(process.cwd()), "../../../static/scripts/kioskapplib"],
             },
         },
-        publicDir: "/static",
-        html: {
-            injectData: {
-                ...env,
-            },
-        },
+        publicDir: "/static"
     };
 });

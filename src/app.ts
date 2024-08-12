@@ -1,9 +1,17 @@
-import { KioskApp, fetchConstants, getRecordTypeAliases, FetchException, handleCommonFetchErrors } from "kiosktsapplib";
+import {
+    KioskApp,
+    fetchConstants,
+    getRecordTypeAliases,
+    FetchException,
+    handleCommonFetchErrors,
+    Constant, AnyDict,
+} from "kiosktsapplib";
 import {nothing, TemplateResult, unsafeCSS} from "lit";
 import "@vaadin/grid"
+import "@vaadin/combo-box"
 import "@vaadin/dialog"
 import { html } from "lit/static-html.js";
-import "./kioskcontextselector.ts"
+import "./kiosktzcombobox.ts"
 
 
 // import { SlDropdown } from "@shoelace-style/shoelace";
@@ -70,7 +78,7 @@ export class TestApp extends KioskApp {
         selector?.openDialog()
     }
 
-    protected renderApp() {
+    protected renderContextSelectorApp() {
         return html`
             <div class="app-frame dialog-1">
                 <kiosk-context-selector 
@@ -79,6 +87,16 @@ export class TestApp extends KioskApp {
                     .recordTypeFilter="${['unit','locus']}"
                     initialRecordType=""
                     @closeSelection="${this.kioskDialogClosed}"></kiosk-context-selector>
+            </div>
+        `
+    }
+
+    protected renderKioskTZComboBoxApp() {
+        return html`
+            <div class="app-frame dialog-1">
+                <kiosk-tz-combo-box disabled style="display:block;max-width: 500px"
+                    .apiContext="${this.apiContext}" 
+                </kiosk-tz-combo-box>
             </div>
         `
     }
@@ -113,7 +131,7 @@ export class TestApp extends KioskApp {
 
         }
         let toolbar = this.renderToolbar();
-        const app = html`${this.renderApp()}`;
+        const app = html`${this.renderKioskTZComboBoxApp()}`;
         return html`<div class="header-frame">${dev}${toolbar}</div>${app}`;
     }
 }

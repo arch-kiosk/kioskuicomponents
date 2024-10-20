@@ -92,7 +92,7 @@ export class KioskTZComboBox extends KioskAppComponent {
 
     fetchFavouriteTimeZones() {
         if (this.kioskTimeZones) {
-            this.kioskTimeZones.getFavouriteTimeZones(false, true)
+            this.kioskTimeZones.getFavouriteTimeZones(false, false)
                 .then((favouriteTimeZones) => {
                     console.log(`about to add ${favouriteTimeZones.length} favourites`)
                     this.addTimeZones(favouriteTimeZones, true)
@@ -136,10 +136,16 @@ export class KioskTZComboBox extends KioskAppComponent {
 
     }
 
+    onKeyUp(e: KeyboardEvent) {
+        if (e.key === "Escape" || e.key === "Enter") {
+            e.stopPropagation()
+        }
+    }
+
 
     apiRender(): TemplateResult {
         return html`
-            <vaadin-combo-box id="kiosk-tz-combo-box" ?disabled="${this.disabled || this.timeZones.length==0}" .value=${(this.value && this.value>-1)?this.value:""} @change=${this.timeZoneChanged} .items="${this.timeZones}" ></vaadin-combo-box>
+            <vaadin-combo-box id="kiosk-tz-combo-box" ?disabled="${this.disabled || this.timeZones.length==0}" .value=${(this.value && this.value>-1)?this.value:""} @change=${this.timeZoneChanged} .items="${this.timeZones}" @keyup="${this.onKeyUp}"></vaadin-combo-box>
         `;
     }
 }

@@ -94,7 +94,7 @@ export class TestApp extends KioskApp {
     protected renderKioskTZComboBoxApp() {
         return html`
             <div class="app-frame dialog-1">
-                <kiosk-tz-combo-box disabled style="display:block;max-width: 500px"
+                <kiosk-tz-combo-box style="display:block;max-width: 500px"
                     .apiContext="${this.apiContext}" 
                 </kiosk-tz-combo-box>
             </div>
@@ -114,6 +114,7 @@ export class TestApp extends KioskApp {
                 </div>
             </div>`;
     }
+
 
     // apiRender is only called once the api is connected.
     apiRender() {

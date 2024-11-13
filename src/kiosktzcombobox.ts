@@ -33,8 +33,11 @@ export class KioskTZComboBox extends KioskAppComponent {
     @property({type: String, reflect: true })
     public text: string = ""
 
-    @property({attribute: true, type: Boolean, reflect: true})
+    @property({attribute: true, type: Boolean})
     public disabled: boolean = false
+
+    @property({attribute: true, type: Boolean})
+    public includeDeprecated: boolean = false
 
     // @property()
     // public timeZone: string;
@@ -97,7 +100,7 @@ export class KioskTZComboBox extends KioskAppComponent {
                     console.log(`about to add ${favouriteTimeZones.length} favourites`)
                     this.addTimeZones(favouriteTimeZones, true)
                     if (this.kioskTimeZones) {
-                        this.kioskTimeZones.getAllTimeZones()
+                        this.kioskTimeZones.getAllTimeZones(this.includeDeprecated)
                             .then((allTimeZones) => {
                                 if (allTimeZones) this.addTimeZones(allTimeZones, false)
                             })

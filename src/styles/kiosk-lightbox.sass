@@ -1,0 +1,117 @@
+@import reset
+@import "../../../server/kiosk/kiosk/static/styles/_constants"
+@import "../../../server/kiosk/kiosk/static/styles/very_basics"
+@import icons
+
+:host
+  position: fixed
+  top: 0px
+  left: 0px
+  height: 100dvh
+  max-width: 100dvw
+  z-index: 100
+  overflow-y: auto
+  overflow-x: hidden
+  background-color: var(--col-bg-body-dm)
+
+.kiosk-lightbox-error
+  position: absolute
+  font-size: var(--font-size-standard)
+  font-family: var(--standard-text) sans-serif
+  font-weight: bold
+  color: var(--col-primary-bg-alert)
+  display: grid
+  place-items: center
+  z-index: 100
+  background: var(--col-bg-alert)
+
+  top: 50%
+  margin-left: calc(50vw)
+  width: 400px
+  height: 10em
+  transform: translateX(-50%) translateY(-50%)
+
+.kiosk-lightbox-outer
+  top: 0
+  left: 0
+  &.background-dark
+    background: var(--col-bg-body-dm)
+  &.background-light
+    background: var(--col-bg-body)
+//padding: 1rem
+
+.kiosk-lightbox-inner
+  display: block
+  right: 0px
+  left: auto
+  width: calc(100dvw - 2rem)
+
+.hide-ui
+  visibility: hidden
+
+.kiosk-lightbox-viewer
+  width: calc(100cqw)
+  //background-color: pink
+  &.expanded
+    height: calc(75dvh)
+
+  &.collapsed
+    height: calc(100dvh - 1rem)
+
+    &.nodata
+      height: calc(100dvh - 2rem)
+
+.kiosk-lightbox-data
+  position: relative
+  z-index: 10
+  transform: translateY(-25px)
+  background-color: white
+  width: 100%
+  min-height: calc(25dvh - 2rem)
+
+.kiosk-lightbox-splitter
+  display: flex
+  place-content: center
+  width: 100%
+  background-color: var(--col-bg-body-dm)
+  color: var(--col-primary-bg-body-dm)
+
+  i
+    font-size: 25px
+
+.kiosk-lightbox-buttons
+  display: flex
+  position: fixed
+  right: 3rem
+  left: auto
+  top: 1em
+  z-index: 2
+
+.kiosk-lightbox-button
+  border-radius: 24px
+  height: 2rem
+  width: 2rem
+  background-color: var(--col-bg-btn)
+  box-shadow: 0px 0px 5px 2px var(--col-bg-att-lighter)
+  color: $col-primary-bg-btn
+  text-align: center
+
+  i
+    line-height: 2rem
+
+  &:hover
+    background-color: var(--col-bg-att)
+    box-shadow: 0px 0px 5px 2px var(--col-bg-att-darker)
+    color: $col-primary-bg-att
+
+  &:active
+    background-color: var(--col-bg-ack)
+    box-shadow: 0px 0px 5px 2px var(--col-bg-ack-darker)
+    color: $col-primary-bg-ack
+
+.kiosk-lightbox-button + .kiosk-lightbox-button
+  margin-left: 1rem
+.kiosk-lightbox-button:last-child
+  margin-left: 2rem
+.kiosk-lightbox-button:first-child
+  margin-right: 1rem

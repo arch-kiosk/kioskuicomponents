@@ -83,7 +83,6 @@ export class KioskContextSelector extends KioskAppComponent {
                     }, 250);
                 }
             }
-
         }
     }
 
@@ -105,7 +104,7 @@ export class KioskContextSelector extends KioskAppComponent {
             "contexts/full",
             {
                 method: "GET",
-                caller: "app.fetchConstants",
+                caller: "app.fetchIdentifiers",
             })
             .then((json: ApiResultContextsFull) => {
                 this.identifiers = json.identifiers;

@@ -3,6 +3,7 @@ import { KioskApp } from "kiosktsapplib";
 
 window.addEventListener("load", () => {
     console.log("kiosktsapplib: kioskdevstarter let's start...");
+    console.log()
     let api = new DevKioskApi();
     registerDevRoutes(api)
     api.initApi()

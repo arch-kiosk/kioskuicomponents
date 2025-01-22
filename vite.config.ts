@@ -1,5 +1,7 @@
 import { defineConfig, searchForWorkspaceRoot, loadEnv } from "vite";
+import license from "rollup-plugin-license";
 import { createHtmlPlugin } from "vite-plugin-html";
+import path from "path";
 
 // noinspection JSUnusedGlobalSymbols
 export default defineConfig(({ command, mode }) => {
@@ -12,6 +14,38 @@ export default defineConfig(({ command, mode }) => {
                 },
 
             }),
+            license({
+                sourcemap: true,
+                cwd: process.cwd(), // The default
+
+                banner: {
+                    commentStyle: "regular", // The default
+
+                    content: {
+                        file: path.join(__dirname, "LICENSE"),
+                        encoding: "utf-8", // Default is utf-8
+                    },
+
+                    // Optional, may be an object or a function returning an object.
+                    // data() {
+                    //     return {
+                    //         foo: 'foo',
+                    //     };
+                    // },
+                },
+
+                thirdParty: {
+                    includePrivate: true, // Default is false.
+                    includeSelf: false, // Default is false.
+                    multipleVersions: false, // Default is false.
+
+                    output: {
+                        file: path.join(__dirname, "dist", "dependencies.txt"),
+                        encoding: "utf-8", // Default is utf-8.
+
+                    },
+                },
+            }),
             // copy({
             //   targets: [ { src: '../../kioskfilemakerworkstationplugin/static/kioskfilemakerworkstation.css',
             //     dest:'./kioskfilemakerworkstation/static'
@@ -22,31 +56,89 @@ export default defineConfig(({ command, mode }) => {
             //   hook: 'buildStart'
             // }),
         ],
+
         esbuild:
             command == "build"
                 ? {
                     //No console.logs in the distribution
-                    drop: ["console", "debugger"],
+                    // drop: ["console", "debugger"],
                 }
                 : {},
         build: {
             outDir: "./dist",
-             lib: {
+            minify: true,
+            lib: {
                 entry: "./kioskuicomponents.ts",
                 formats: ["es"],
             },
+            rollupOptions: {
+                // external: [/^dexie/]
+                //   // external: [/^lit/, /@vaadin.*/]
+            },
             // rollupOptions: {
-            //     external: [/^lit/]
-            //   // external: [/^lit/, /@vaadin.*/]
             // }
         },
         server: {
+            hmr: false,
+            host: true,
+            proxy: {
+
+                // '/foo': 'http://localhost:4567',
+                "/static/assets/images": {
+                    target: "http://localhost:5000",
+                    changeOrigin: true,
+                    secure: false,
+                    configure: (proxy, _options) => {
+                        proxy.on("error", (err, _req, _res) => {
+                            console.log("proxy error", err);
+                        });
+                        proxy.on("proxyReq", (_proxyReq, req, _res) => {
+                            console.log("Sending Request to the Target:", req.method, req.url);
+                        });
+                        proxy.on("proxyRes", (proxyRes, req, _res) => {
+                            console.log("Received Response from the Target:", proxyRes.statusCode, req.url);
+                        });
+                    }
+
+                },
+                "/api": {
+                    target: "http://localhost:5000",
+                    changeOrigin: true,
+                    secure: false,
+                    configure: (proxy, _options) => {
+                        proxy.on("error", (err, _req, _res) => {
+                            console.log("proxy error", err);
+                        });
+                        proxy.on("proxyReq", (_proxyReq, req, _res) => {
+                            console.log("Sending Request to the Target:", req.method, req.url);
+                        });
+                        proxy.on("proxyRes", (proxyRes, req, _res) => {
+                            console.log("Received Response from the Target:", proxyRes.statusCode, req.url);
+                        });
+                    },
+                },
+                "/static": {
+                    target: "http://localhost:5000",
+                    changeOrigin: true,
+                    secure: false,
+                    configure: (proxy, _options) => {
+                        proxy.on("error", (err, _req, _res) => {
+                            console.log("proxy error", err);
+                        });
+                        proxy.on("proxyReq", (_proxyReq, req, _res) => {
+                            console.log("Sending Request to the Target:", req.method, req.url);
+                        });
+                        proxy.on("proxyRes", (proxyRes, req, _res) => {
+                            console.log("Received Response from the Target:", proxyRes.statusCode, req.url);
+                        });
+                    },
+                },
+            },
             fs: {
                 strict: true,
-                host: true,
                 allow: [searchForWorkspaceRoot(process.cwd()), "../../../static/scripts/kioskapplib"],
             },
         },
-        publicDir: "/static"
+        publicDir: "/public",
     };
 });

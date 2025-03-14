@@ -96,7 +96,7 @@ export class TestApp extends KioskApp {
             get height() {
                 return 5000;
             },
-            bof: function () {return false},
+            bof: function () {return true},
             eof: function () {return false},
             prev: function() { return false},
             next: function () {

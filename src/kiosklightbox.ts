@@ -27,6 +27,7 @@ export class KioskLightbox extends KioskAppComponent {
     static properties = {
         ...super.properties,
     };
+    private rotationValues = new Map<string, number>()
 
     private firstTile = false;
 
@@ -73,6 +74,8 @@ export class KioskLightbox extends KioskAppComponent {
     @property({ type: Boolean })
     hasData = false;
 
+    // private disableRotationCacheOnce = false
+
     public setURLProvider(value: KioskLightboxUrlProvider) {
         this.urlProvider = value;
     }
@@ -97,6 +100,7 @@ export class KioskLightbox extends KioskAppComponent {
                 loadTilesWithAjax: true,
                 ajaxHeaders: headerObject,
                 crossOriginPolicy: "Anonymous",
+
             });
 
             this.viewer.addHandler("open", () => {
@@ -115,6 +119,23 @@ export class KioskLightbox extends KioskAppComponent {
                 if (this.firstTile) this.opened(true, "");
                 this.firstTile = false
             });
+            this.viewer.addHandler("rotate", (e: {degrees: number}) => {
+                // if (this.disableRotationCacheOnce) {
+                //     console.log("rotation skipped:", e);
+                //     this.disableRotationCacheOnce = false
+                //     return
+                // }
+                // console.log("rotation cached:", e);
+                if (this.urlProvider?.url) {
+                    // console.log(`rotation fired with ${e.degrees})`)
+                    if (e.degrees % 360 === 0)
+                        this.rotationValues.delete(this.urlProvider.url)
+                    else
+                        this.rotationValues.set(this.urlProvider.url, e.degrees % 360)
+                }
+                // console.log("rotation values", this.rotationValues)
+            });
+
         }
     }
 
@@ -160,30 +181,44 @@ export class KioskLightbox extends KioskAppComponent {
             if (this.urlProvider?.url && this.viewer) {
                 this.eof = this.urlProvider.eof();
                 this.bof = this.urlProvider.bof();
-                let height;
-                let width;
+                let height=0;
+                let width=0;
                 try {
                     height = this.urlProvider.height;
                     width = this.urlProvider.width;
-                } catch {
+                } catch {}
+                if (height === 0 || width === 0){
                     height = 5000;
                     width = 5000;
                 }
 
                 try {
+                    console.log(this.rotationValues);
+                    const degrees = this.rotationValues.get(this.urlProvider.url)??0
+                    console.log(`will set to ${degrees} degrees`);
+                    if (this.viewer.viewport.getRotation() != degrees) {
+                        // this.disableRotationCacheOnce = true
+                        this.viewer.viewport.setRotation(degrees)
+                    }
                     this.firstTile = true;
                     this.viewer.open(
                         {
-                            type: "legacy-image-pyramid",
-                            levels: [
-                                {
-                                    url: this.urlProvider.url,
-                                    height: height,
-                                    width: width,
-                                },
-                            ],
+                            tileSource: {
+                                type: "legacy-image-pyramid",
+                                levels: [
+                                    {
+                                        url: this.urlProvider.url,
+                                        height: height,
+                                        width: width,
+                                    },
+                                ],
+                            },
+                            // degrees: degrees, //this could be used to set the EXIF degrees!
+                            collectionImmediately: true
                         },
                     );
+
+                    // this.viewer.viewport.
                 } catch (e) {
                     this.viewerError = `An error occurred: ${e}`;
                 }
@@ -306,25 +341,29 @@ export class KioskLightbox extends KioskAppComponent {
     }
 
     private tryNext() {
-        if (!this.emitBeforeEvent("beforeNext", {},
-            () => {
-                this.navDeferred = false
-            },
-            () => {
-                this.doNext()
-            })
-        ) this.navDeferred = true
+        if (!this.urlProvider?.eof()) {
+            if (!this.emitBeforeEvent("beforeNext", {},
+                () => {
+                    this.navDeferred = false
+                },
+                () => {
+                    this.doNext()
+                })
+            ) this.navDeferred = true
+        }
     }
 
     private tryPrev() {
-        if (!this.emitBeforeEvent("beforePrev", {},
-            () => {
-                this.navDeferred = false
-            },
-            () => {
-                this.doPrev()
-            })
-        ) this.navDeferred = true
+        if (!this.urlProvider?.bof()) {
+            if (!this.emitBeforeEvent("beforePrev", {},
+                () => {
+                    this.navDeferred = false
+                },
+                () => {
+                    this.doPrev()
+                })
+            ) this.navDeferred = true
+        }
     }
 
     public close(deferIt: boolean=false){
@@ -342,8 +381,8 @@ export class KioskLightbox extends KioskAppComponent {
     renderNavButtons() {
         return html`<div class="kiosk-lightbox-buttons ${this.hideUI?'hide-ui':''}">
                         <div class="kiosk-lightbox-button" @click="${this.toggleBackground}"><i class="fa-circle-half-stroke"></i></div>
-                        ${this.bof?nothing:html`<div class = "kiosk-lightbox-button" @click="${this.tryPrev}"><i class="fa-prev"></i> </div>`}
-                        ${this.eof?nothing:html`<div class = "kiosk-lightbox-button" @click="${this.tryNext}"> <i class="fa-next"></i></div>`}
+                        <div class = "kiosk-lightbox-button ${this.bof?'nav-button-deactivated':''}" @click="${this.tryPrev}"><i class="fa-prev"></i> </div>
+                        <div class = "kiosk-lightbox-button ${this.eof?'nav-button-deactivated':''}" @click="${this.tryNext}"> <i class="fa-next"></i></div>
                         <div class="kiosk-lightbox-button" @click="${this.tryClose}"><i class="fa-close"></i></div>
                     </div>
                 `

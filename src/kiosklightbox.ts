@@ -5,7 +5,7 @@ import local_css from "./styles/kiosk-lightbox.sass?inline";
 import { html, css, TemplateResult, unsafeCSS, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-import { AnyDict, KioskAppComponent } from "kiosktsapplib";
+import { AnyDict, BeforeEvent, KioskAppComponent } from "kiosktsapplib";
 import "./kioskdialog.ts";
 import OpenSeadragon from "openseadragon";
 
@@ -68,11 +68,20 @@ export class KioskLightbox extends KioskAppComponent {
     @property({ type: Boolean, reflect: true })
     open: boolean = false;
 
+    @property({ type: String, reflect: true })
+    currentResolution: string = "";
+
+    @property()
+    resolutions: Array<string> = [];
+
     @property()
     dataVisible = false;
 
     @property({ type: Boolean })
     hasData = false;
+
+    @state()
+    private resOpened = false
 
     // private disableRotationCacheOnce = false
 
@@ -378,8 +387,52 @@ export class KioskLightbox extends KioskAppComponent {
         this.darkMode = !this.darkMode
     }
 
+    public toggleResolution() {
+        this.resOpened = !this.resOpened
+    }
+
+    switchResolution(e: MouseEvent) {
+        const newResolution = (e.currentTarget as HTMLDivElement)?.dataset.resolution;
+        if (newResolution && newResolution != this.currentResolution) {
+            this.currentResolution = newResolution
+            const event: BeforeEvent = new CustomEvent("ResolutionChanged", {
+                bubbles: true,
+                composed: true,
+                cancelable: false
+            })
+            this.dispatchEvent(event)
+        }
+        e.stopPropagation()
+        this.resOpened = false
+    }
+
+    public renderResolutionButton() {
+        if (this.resolutions.length > 1) {
+            return html`
+                <div class="kiosk-lightbox-button resolution-btn" @click="${this.toggleResolution}">
+                    <span>RES</span>
+                    ${this.resOpened?html`
+                                <div class="resolutions">
+                                    ${this.resolutions.map( res => html`
+                                        <div class="res-item" data-resolution=${res} @click="${this.switchResolution}">
+                                            <div class="res-item-checker">
+                                                ${res.toLowerCase() === this.currentResolution.toLowerCase()?html`<i class = "fas fa-check" > </i>`:nothing}
+                                            </div>
+                                            <div>${res}</div>
+                                        </div>                                        
+                                    `)}
+
+                                </div>`:nothing}
+                </div>
+            `
+        } else {
+            return nothing
+        }
+    }
+
     renderNavButtons() {
         return html`<div class="kiosk-lightbox-buttons ${this.hideUI?'hide-ui':''}">
+                        ${this.renderResolutionButton()}
                         <div class="kiosk-lightbox-button" @click="${this.toggleBackground}"><i class="fa-circle-half-stroke"></i></div>
                         <div class = "kiosk-lightbox-button ${this.bof?'nav-button-deactivated':''}" @click="${this.tryPrev}"><i class="fa-prev"></i> </div>
                         <div class = "kiosk-lightbox-button ${this.eof?'nav-button-deactivated':''}" @click="${this.tryNext}"> <i class="fa-next"></i></div>

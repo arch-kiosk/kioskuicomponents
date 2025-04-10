@@ -3,6 +3,7 @@
 @import "../../../server/kiosk/kiosk/static/styles/very_basics"
 @import icons
 
+
 :host
   position: fixed
   top: 0px
@@ -122,3 +123,30 @@
     background-color: var(--col-bg-btn)
     box-shadow: none
     color: $col-primary-bg-btn
+.resolution-btn
+  font-family: $monospace
+  vertical-align: middle
+  font-size: 12px
+  line-height: 32px
+.resolutions
+  position: absolute
+  background-color: var(--col-bg-btn)
+  box-shadow: 0px 0px 5px 2px var(--col-bg-att-lighter)
+  border: 1px solid
+  border-radius: 5px
+  text-align: left
+  color: $col-primary-bg-btn
+  padding: .5rem
+.res-item
+  -webkit-user-select: none
+  user-select: none
+  display: flex
+  flex-direction: row
+  &:hover, &:active
+    color: $col-accent-bg-btn
+  .res-item-checker
+    width: 1em
+    text-align: center
+    margin-right: .5em
+
+

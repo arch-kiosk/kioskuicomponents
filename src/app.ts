@@ -119,6 +119,10 @@ export class TestApp extends KioskApp {
             }
         }
         lightBox.setURLProvider(urlProvider)
+        lightBox.resolutions = ["Best", "8K", "Master", "medium", "small"]
+        lightBox.addEventListener("ResolutionChanged", (() => {
+            alert("Resolution has changed")
+        }))
         lightBox?.openDialog()
     }
 

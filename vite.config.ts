@@ -1,6 +1,7 @@
 import { defineConfig, searchForWorkspaceRoot, loadEnv } from "vite";
 import license from "rollup-plugin-license";
 import { createHtmlPlugin } from "vite-plugin-html";
+import dts from 'vite-plugin-dts'
 import path from "path";
 
 // noinspection JSUnusedGlobalSymbols
@@ -8,6 +9,9 @@ export default defineConfig(({ command, mode }) => {
     const env = loadEnv(mode, "env");
     return {
         plugins: [
+            dts({
+                rollupTypes: true,
+            }),
             createHtmlPlugin({
                 inject: {
                     ...env,
@@ -46,15 +50,6 @@ export default defineConfig(({ command, mode }) => {
                     },
                 },
             }),
-            // copy({
-            //   targets: [ { src: '../../kioskfilemakerworkstationplugin/static/kioskfilemakerworkstation.css',
-            //     dest:'./kioskfilemakerworkstation/static'
-            //   }, {
-            //     src: '../../kioskfilemakerworkstationplugin/static/scripts',
-            //     dest:'./kioskfilemakerworkstation/static'
-            //   }],
-            //   hook: 'buildStart'
-            // }),
         ],
 
         esbuild:
@@ -65,18 +60,19 @@ export default defineConfig(({ command, mode }) => {
                 }
                 : {},
         build: {
-            outDir: "./dist",
+            outDir: mode === "bundle"?"./kioskbundle":"./dist",
+            emptyOutDir: true,
             minify: true,
+
             lib: {
                 entry: "./kioskuicomponents.ts",
                 formats: ["es"],
             },
-            rollupOptions: {
-                // external: [/^dexie/]
-                //   // external: [/^lit/, /@vaadin.*/]
+            rollupOptions: mode === "bundle"?{}: {
+                external: (id) =>
+                    // Externalize all npm packages but keep local files
+                    !id.startsWith('.') && !id.startsWith('/') && !id.startsWith('\0') && !id.match(/^[A-Za-z]:/)
             },
-            // rollupOptions: {
-            // }
         },
         server: {
             hmr: false,

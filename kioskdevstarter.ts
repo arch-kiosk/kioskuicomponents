@@ -1,10 +1,10 @@
-import { DevKioskApi } from "kiosktsapplib";
-import { KioskApp } from "kiosktsapplib";
+import { DevKioskApi } from "@arch-kiosk/kiosktsapplib";
+import { KioskApp } from "@arch-kiosk/kiosktsapplib";
 
 window.addEventListener("load", () => {
     console.log("kiosktsapplib: kioskdevstarter let's start...");
     console.log()
-    let api = new DevKioskApi();
+    let api = new DevKioskApi(undefined, import.meta.env.VITE_DEV_API_URL, import.meta.env.VITE_DEV_API_USER, import.meta.env.VITE_DEV_API_PWD);
     registerDevRoutes(api)
     api.initApi()
         .catch((e) => {

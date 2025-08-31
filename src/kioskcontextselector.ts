@@ -10,11 +10,11 @@ import {
     handleCommonFetchErrors,
     ApiResultContextsFullIdentifierInformation,
     recordType2Name,
-} from "kiosktsapplib";
+} from "@arch-kiosk/kiosktsapplib";
 import { registerStyles } from "@vaadin/vaadin-themable-mixin/register-styles.js";
 import "./kioskdialog.ts";
 import { KioskDialog } from "./kioskdialog";
-import { AnyDict } from "kiosktsapplib";
+import { AnyDict } from "@arch-kiosk/kiosktsapplib";
 import { GridActiveItemChangedEvent } from "@vaadin/grid";
 import { columnBodyRenderer, GridColumnBodyLitRenderer } from "@vaadin/grid/lit";
 

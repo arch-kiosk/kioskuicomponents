@@ -6,10 +6,10 @@ import { customElement, state, property } from "lit/decorators.js";
 import {
     KioskAppComponent,
     KioskTimeZones, TimeZone,
-} from "kiosktsapplib";
+} from "@arch-kiosk/kiosktsapplib";
 // import { registerStyles } from "@vaadin/vaadin-themable-mixin/register-styles.js";
 import "./kioskdialog.ts";
-import { AnyDict } from "kiosktsapplib";
+import { AnyDict } from "@arch-kiosk/kiosktsapplib";
 
 @customElement("kiosk-tz-combo-box")
 export class KioskTZComboBox extends KioskAppComponent {

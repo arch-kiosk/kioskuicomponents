@@ -5,7 +5,7 @@ import {
     FetchException,
     handleCommonFetchErrors,
     Constant, AnyDict, BeforeEvent,
-} from "kiosktsapplib";
+} from "@arch-kiosk/kiosktsapplib";
 import {TemplateResult, unsafeCSS} from "lit";
 import "@vaadin/grid"
 import "@vaadin/combo-box"
@@ -14,10 +14,6 @@ import { html } from "lit/static-html.js";
 import "./kiosktzcombobox.ts"
 import "./kioskcontextselector.ts"
 import "./kiosklightbox.ts";
-
-
-
-// import { SlDropdown } from "@shoelace-style/shoelace";
 
 // @ts-ignore
 import local_css from "./styles/test-app.sass?inline";

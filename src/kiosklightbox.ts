@@ -5,7 +5,7 @@ import local_css from "./styles/kiosk-lightbox.sass?inline";
 import { html, css, TemplateResult, unsafeCSS, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-import { AnyDict, BeforeEvent, KioskAppComponent } from "kiosktsapplib";
+import { AnyDict, BeforeEvent, KioskAppComponent } from "@arch-kiosk/kiosktsapplib";
 import "./kioskdialog.ts";
 import OpenSeadragon from "openseadragon";
 

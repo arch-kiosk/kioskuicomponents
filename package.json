@@ -1,6 +1,6 @@
 {
   "name": "@arch-kiosk/kioskuicomponents",
-  "version": "0.4git add -.1",
+  "version": "0.4.1",
   "type": "module",
   "types": "./dist/index.d.ts",
   "main": "./kioskuicomponents.ts",

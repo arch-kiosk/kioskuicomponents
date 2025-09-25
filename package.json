@@ -1,6 +1,6 @@
 {
   "name": "@arch-kiosk/kioskuicomponents",
-  "version": "0.4.1",
+  "version": "0.4git add -.1",
   "type": "module",
   "types": "./dist/index.d.ts",
   "main": "./kioskuicomponents.ts",
@@ -27,8 +27,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "dist": "vite build && npm pack --pack-destination ./dist",
-    "dist Kiosk": "vite build --mode bundle",
+    "patch and dist": "vite build && npm version patch && npm pack --pack-destination ./dist",
+    "patch and dist Kiosk": "vite build && npm version patch && --mode bundle",
     "preview": "vite preview",
     "test": "vitest --mode development"
   },
@@ -39,7 +39,7 @@
     "@vaadin/grid": "^24.5.5",
     "dexie": "^4.0.10",
     "lit": "^3.2.1",
-    "openseadragon": "^5.0.1",
+    "openseadragon": "github:arch-kiosk/openseadragon#imagetilesource_with_ajax",
     "rollup-plugin-license": "^3.5.3"
   },
   "devDependencies": {

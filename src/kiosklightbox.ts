@@ -7,7 +7,9 @@ import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { AnyDict, BeforeEvent, KioskAppComponent } from "@arch-kiosk/kiosktsapplib";
 import "./kioskdialog.ts";
+// import "openseadragon";
 import OpenSeadragon from "openseadragon";
+// import OpenSeadragon from "openseadragon";
 
 export type KioskLightboxFileDirection = "prev" | "next"
 
@@ -27,7 +29,7 @@ export class KioskLightbox extends KioskAppComponent {
     static properties = {
         ...super.properties,
     };
-    private rotationValues = new Map<string, number>()
+    private rotationValues = new Map<string, number>();
 
     private firstTile = false;
 
@@ -41,8 +43,8 @@ export class KioskLightbox extends KioskAppComponent {
      *  @returns an object consisting of a url to load or an empty string if there isn't any in that direction and a bookmark that will be
      *  @throws exceptions if something goes wrong
      */
-    public openseadragonImagePath = "/static/assets/images/lightbox/"
-        // private onNextFileCallback?: KioskLightboxOnNextFileCallback<unknown>
+    public openseadragonImagePath = "/static/assets/images/lightbox/";
+    // private onNextFileCallback?: KioskLightboxOnNextFileCallback<unknown>
     private urlProvider?: KioskLightboxUrlProvider;
 
     // public onNextFile?: <T>KioskLightboxOnNextFileCallback<T>
@@ -51,19 +53,19 @@ export class KioskLightbox extends KioskAppComponent {
     private viewerError?: string;
 
     @state()
-    private eof = false
+    private eof = false;
 
     @state()
-    private bof = false
+    private bof = false;
 
     @state()
-    private hideUI = false
+    private hideUI = false;
 
     @state()
-    private navDeferred?: boolean = false
+    private navDeferred?: boolean = false;
 
     @state()
-    private darkMode = true
+    private darkMode = true;
 
     @property({ type: Boolean, reflect: true })
     open: boolean = false;
@@ -81,7 +83,7 @@ export class KioskLightbox extends KioskAppComponent {
     hasData = false;
 
     @state()
-    private resOpened = false
+    private resOpened = false;
 
     // private disableRotationCacheOnce = false
 
@@ -93,11 +95,6 @@ export class KioskLightbox extends KioskAppComponent {
         this.viewer && this.viewer.destroy();
         this.navDeferred = false;
         const el = this.shadowRoot?.getElementById("open-sea-dragon");
-        const headers: Headers = this.apiContext.getHeaders("application/json");
-        let headerObject: AnyDict = {};
-        headers.forEach((value, key) => {
-            headerObject[key] = value;
-        });
         if (el) {
             this.firstTile = false;
             this.viewer = OpenSeadragon({
@@ -106,29 +103,30 @@ export class KioskLightbox extends KioskAppComponent {
                 prefixUrl: this.openseadragonImagePath,
                 showFullPageControl: false,
                 showRotationControl: true,
-                loadTilesWithAjax: true,
-                ajaxHeaders: headerObject,
+                // loadTilesWithAjax: true,
+                // ajaxHeaders: headerObject,
+                // ajaxWithCredentials: true,
                 crossOriginPolicy: "Anonymous",
 
             });
 
             this.viewer.addHandler("open", () => {
-                console.log("success")
+                console.log("success");
             });
             this.viewer.addHandler("open-failed", (e) => {
                 this.opened(false, e.message);
             });
             this.viewer.addHandler("tile-load-failed", (e) => {
-                console.log("tile load failure")
+                console.log("tile load failure");
                 if (this.firstTile) this.opened(false, e.message);
-                this.firstTile = false
+                this.firstTile = false;
             });
             this.viewer.addHandler("tile-loaded", () => {
-                console.log("tile loaded successfully")
+                console.log("tile loaded successfully");
                 if (this.firstTile) this.opened(true, "");
-                this.firstTile = false
+                this.firstTile = false;
             });
-            this.viewer.addHandler("rotate", (e: {degrees: number}) => {
+            this.viewer.addHandler("rotate", (e: { degrees: number }) => {
                 // if (this.disableRotationCacheOnce) {
                 //     console.log("rotation skipped:", e);
                 //     this.disableRotationCacheOnce = false
@@ -138,9 +136,9 @@ export class KioskLightbox extends KioskAppComponent {
                 if (this.urlProvider?.url) {
                     // console.log(`rotation fired with ${e.degrees})`)
                     if (e.degrees % 360 === 0)
-                        this.rotationValues.delete(this.urlProvider.url)
+                        this.rotationValues.delete(this.urlProvider.url);
                     else
-                        this.rotationValues.set(this.urlProvider.url, e.degrees % 360)
+                        this.rotationValues.set(this.urlProvider.url, e.degrees % 360);
                 }
                 // console.log("rotation values", this.rotationValues)
             });
@@ -150,7 +148,7 @@ export class KioskLightbox extends KioskAppComponent {
 
     nextFile(direction: KioskLightboxFileDirection) {
         let canGo: boolean;
-        this.viewerError = undefined
+        this.viewerError = undefined;
 
         if (!this.viewer) {
             this.viewerError = "The viewer instance was not successfully initialized, so I can't show anything.";
@@ -178,54 +176,64 @@ export class KioskLightbox extends KioskAppComponent {
     }
 
     reloadFile() {
-        this._openFile()
+        this._openFile();
     }
 
     showHideUI(hide: boolean | null = null) {
-        this.hideUI = (hide === null) ? !this.hideUI : hide
+        this.hideUI = (hide === null) ? !this.hideUI : hide;
     }
 
     private _openFile() {
-        this.tryOpen( () => {
+        this.tryOpen(() => {
             if (this.urlProvider?.url && this.viewer) {
                 this.eof = this.urlProvider.eof();
                 this.bof = this.urlProvider.bof();
-                let height=0;
-                let width=0;
+                let height = 0;
+                let width = 0;
                 try {
                     height = this.urlProvider.height;
                     width = this.urlProvider.width;
-                } catch {}
-                if (height === 0 || width === 0){
+                } catch {
+                }
+                if (height === 0 || width === 0) {
                     height = 5000;
                     width = 5000;
                 }
 
                 try {
                     console.log(this.rotationValues);
-                    const degrees = this.rotationValues.get(this.urlProvider.url)??0
+                    const degrees = this.rotationValues.get(this.urlProvider.url) ?? 0;
                     console.log(`will set to ${degrees} degrees`);
                     if (this.viewer.viewport.getRotation() != degrees) {
                         // this.disableRotationCacheOnce = true
-                        this.viewer.viewport.setRotation(degrees)
+                        this.viewer.viewport.setRotation(degrees);
                     }
                     this.firstTile = true;
-                    this.viewer.open(
-                        {
-                            tileSource: {
-                                type: "legacy-image-pyramid",
-                                levels: [
-                                    {
-                                        url: this.urlProvider.url,
-                                        height: height,
-                                        width: width,
-                                    },
-                                ],
-                            },
-                            // degrees: degrees, //this could be used to set the EXIF degrees!
-                            collectionImmediately: true
-                        },
-                    );
+                    const headers: Headers = this.apiContext.getHeaders("application/json");
+                    let headerObject: AnyDict = {};
+                    headers.forEach((value, key) => {
+                        headerObject[key] = value;
+                    });
+                    const singleFileOptions = {
+                        type: "image",
+                        url: this.urlProvider.url,
+                        loadTilesWithAjax: true,
+                        ajaxHeaders: headerObject,
+                        ajaxWithCredentials: true,
+                    };
+
+                    this.viewer.open(singleFileOptions);
+                    // this.viewer.open(new OpenSeadragon.LegacyTileSource(
+                    //     [
+                    //         {
+                    //             url: this.urlProvider.url,
+                    //             height: height,
+                    //             width: width,
+                    //         },
+                    //     ]),
+                    // );
+                    // degrees: degrees, //this could be used to set the EXIF degrees!
+                    //     collectionImmediately: true
 
                     // this.viewer.viewport.
                 } catch (e) {
@@ -234,7 +242,7 @@ export class KioskLightbox extends KioskAppComponent {
             } else {
                 this.viewerError = `An error occurred: no url provider or no viewer in _openFile.`;
             }
-        })
+        });
     }
 
     disconnectedCallback() {
@@ -280,13 +288,13 @@ export class KioskLightbox extends KioskAppComponent {
     private tryOpen(proceed: () => void) {
         if (!this.emitBeforeEvent("beforeOpen", {},
             () => {
-                this.navDeferred = false
+                this.navDeferred = false;
             },
             () => {
-                this.navDeferred = false
-                proceed()
+                this.navDeferred = false;
+                proceed();
             })
-        ) this.navDeferred = true
+        ) this.navDeferred = true;
     }
 
     opened(result: boolean, errMsg: string) {
@@ -297,7 +305,7 @@ export class KioskLightbox extends KioskAppComponent {
                 detail: {
                     component: this,
                     result: result,
-                    errMsg: errMsg
+                    errMsg: errMsg,
                 },
             });
             this.dispatchEvent(event);
@@ -316,49 +324,49 @@ export class KioskLightbox extends KioskAppComponent {
     }
 
     private doClose() {
-            this.open = false
-        this.navDeferred = false
+        this.open = false;
+        this.navDeferred = false;
     }
 
     private doNext() {
         try {
-            this.nextFile("next")
+            this.nextFile("next");
         } catch (e) {
-            console.log(e)
+            console.log(e);
         }
-        this.navDeferred = false
+        this.navDeferred = false;
     }
 
     private doPrev() {
         try {
-            this.nextFile("prev")
+            this.nextFile("prev");
         } catch (e) {
-            console.log(e)
+            console.log(e);
         }
-        this.navDeferred = false
+        this.navDeferred = false;
     }
 
     private tryClose() {
         if (!this.emitBeforeEvent("beforeClose", {},
             () => {
-                this.navDeferred = false
+                this.navDeferred = false;
             },
             () => {
-                this.doClose()
+                this.doClose();
             })
-        ) this.navDeferred = true
+        ) this.navDeferred = true;
     }
 
     private tryNext() {
         if (!this.urlProvider?.eof()) {
             if (!this.emitBeforeEvent("beforeNext", {},
                 () => {
-                    this.navDeferred = false
+                    this.navDeferred = false;
                 },
                 () => {
-                    this.doNext()
+                    this.doNext();
                 })
-            ) this.navDeferred = true
+            ) this.navDeferred = true;
         }
     }
 
@@ -366,44 +374,45 @@ export class KioskLightbox extends KioskAppComponent {
         if (!this.urlProvider?.bof()) {
             if (!this.emitBeforeEvent("beforePrev", {},
                 () => {
-                    this.navDeferred = false
+                    this.navDeferred = false;
                 },
                 () => {
-                    this.doPrev()
+                    this.doPrev();
                 })
-            ) this.navDeferred = true
+            ) this.navDeferred = true;
         }
     }
 
-    public close(deferIt: boolean=false){
-        this.navDeferred = false
+    public close(deferIt: boolean = false) {
+        this.navDeferred = false;
         if (deferIt) {
-            this.tryClose()
+            this.tryClose();
         } else {
-            this.doClose()
+            this.doClose();
         }
     }
+
     public toggleBackground() {
-        this.darkMode = !this.darkMode
+        this.darkMode = !this.darkMode;
     }
 
     public toggleResolution() {
-        this.resOpened = !this.resOpened
+        this.resOpened = !this.resOpened;
     }
 
     switchResolution(e: MouseEvent) {
         const newResolution = (e.currentTarget as HTMLDivElement)?.dataset.resolution;
         if (newResolution && newResolution != this.currentResolution) {
-            this.currentResolution = newResolution
+            this.currentResolution = newResolution;
             const event: BeforeEvent = new CustomEvent("ResolutionChanged", {
                 bubbles: true,
                 composed: true,
-                cancelable: false
-            })
-            this.dispatchEvent(event)
+                cancelable: false,
+            });
+            this.dispatchEvent(event);
         }
-        e.stopPropagation()
-        this.resOpened = false
+        e.stopPropagation();
+        this.resOpened = false;
     }
 
     public renderResolutionButton() {
@@ -411,57 +420,62 @@ export class KioskLightbox extends KioskAppComponent {
             return html`
                 <div class="kiosk-lightbox-button resolution-btn" @click="${this.toggleResolution}">
                     <span>RES</span>
-                    ${this.resOpened?html`
-                                <div class="resolutions">
-                                    ${this.resolutions.map( res => html`
-                                        <div class="res-item" data-resolution=${res} @click="${this.switchResolution}">
-                                            <div class="res-item-checker">
-                                                ${res.toLowerCase() === this.currentResolution.toLowerCase()?html`<i class = "fas fa-check" > </i>`:nothing}
-                                            </div>
-                                            <div>${res}</div>
-                                        </div>                                        
-                                    `)}
+                    ${this.resOpened ? html`
+                        <div class="resolutions">
+                            ${this.resolutions.map(res => html`
+                                <div class="res-item" data-resolution=${res} @click="${this.switchResolution}">
+                                    <div class="res-item-checker">
+                                        ${res.toLowerCase() === this.currentResolution.toLowerCase() ? html`<i
+                                            class="fas fa-check"> </i>` : nothing}
+                                    </div>
+                                    <div>${res}</div>
+                                </div>
+                            `)}
 
-                                </div>`:nothing}
+                        </div>` : nothing}
                 </div>
-            `
+            `;
         } else {
-            return nothing
+            return nothing;
         }
     }
 
     renderNavButtons() {
-        return html`<div class="kiosk-lightbox-buttons ${this.hideUI?'hide-ui':''}">
-                        ${this.renderResolutionButton()}
-                        <div class="kiosk-lightbox-button" @click="${this.toggleBackground}"><i class="fa-circle-half-stroke"></i></div>
-                        <div class = "kiosk-lightbox-button ${this.bof?'nav-button-deactivated':''}" @click="${this.tryPrev}"><i class="fa-prev"></i> </div>
-                        <div class = "kiosk-lightbox-button ${this.eof?'nav-button-deactivated':''}" @click="${this.tryNext}"> <i class="fa-next"></i></div>
-                        <div class="kiosk-lightbox-button" @click="${this.tryClose}"><i class="fa-close"></i></div>
-                    </div>
-                `
+        return html`
+            <div class="kiosk-lightbox-buttons ${this.hideUI ? "hide-ui" : ""}">
+                ${this.renderResolutionButton()}
+                <div class="kiosk-lightbox-button" @click="${this.toggleBackground}"><i
+                    class="fa-circle-half-stroke"></i></div>
+                <div class="kiosk-lightbox-button ${this.bof ? "nav-button-deactivated" : ""}" @click="${this.tryPrev}">
+                    <i class="fa-prev"></i></div>
+                <div class="kiosk-lightbox-button ${this.eof ? "nav-button-deactivated" : ""}" @click="${this.tryNext}">
+                    <i class="fa-next"></i></div>
+                <div class="kiosk-lightbox-button" @click="${this.tryClose}"><i class="fa-close"></i></div>
+            </div>
+        `;
     }
 
     renderOpenSeaDragon(): TemplateResult {
         const dataViewerClasses = { expanded: this.dataVisible, collapsed: !this.dataVisible, nodata: !this.hasData };
 
         return html`
-            <div class="kiosk-lightbox-outer ${this.darkMode?'background-dark':'background-light'}">
+            <div class="kiosk-lightbox-outer ${this.darkMode ? "background-dark" : "background-light"}">
                 ${this.navDeferred ? nothing : this.renderNavButtons()}
                 ${this.renderError()}
-                <div class="kiosk-lightbox-inner ${this.hideUI?'hide-ui':nothing}" 
-                     style="${this.viewerError?'visibility: hidden':nothing}">
+                <div class="kiosk-lightbox-inner ${this.hideUI ? "hide-ui" : nothing}"
+                     style="${this.viewerError ? "visibility: hidden" : nothing}">
                     <div id="open-sea-dragon"
                          class="kiosk-lightbox-viewer ${classMap(dataViewerClasses)}">
                     </div>
                 </div>
                 ${this.hasData ? html`
-                    <div class="kiosk-lightbox-data" style="${this.viewerError?'visibility: hidden':nothing}">
+                    <div class="kiosk-lightbox-data" style="${this.viewerError ? "visibility: hidden" : nothing}">
                         <div class="kiosk-lightbox-splitter" @click="${this.splitterClicked}">
                             <i class="fa-view-list"></i>
                         </div>
                         <slot></slot>
                     </div>` : nothing}
-            </div>`
+            </div>`;
     }
 
 

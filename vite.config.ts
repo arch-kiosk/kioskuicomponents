@@ -68,14 +68,15 @@ export default defineConfig(({ command, mode }) => {
                 entry: "./kioskuicomponents.ts",
                 formats: ["es"],
             },
-            rollupOptions: mode === "bundle"?{}: {
+            //bundle 3rd party libraries only in mode "bundle". Mode bundle is for the package that is being used by SPAs
+            rollupOptions: mode !== "bundle"?{
                 external: (id) =>
                     // Externalize all npm packages but keep local files
                     !id.startsWith('.') && !id.startsWith('/') && !id.startsWith('\0') && !id.match(/^[A-Za-z]:/)
-            },
+            }:{},
         },
         server: {
-            hmr: false,
+            hmr: true,
             host: true,
             proxy: {
 

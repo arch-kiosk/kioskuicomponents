@@ -136,6 +136,50 @@ export class TestApp extends KioskApp {
     lightBoxClosed() {
         alert("Ligthbox closed")
     }
+    openSVGInLightbox() {
+        let lightBox: KioskLightbox | undefined | null = this.shadowRoot?.querySelector("kiosk-lightbox")
+        if (!lightBox) return
+        let mode = 0
+        const urlProvider = {
+            url: "",
+            fileType: "svg",
+            apiContext: this.apiContext,
+            get width() {
+                return 5000;
+            },
+            get height() {
+                return 5000;
+            },
+            bof: function () {return true},
+            eof: function () {return false},
+            prev: function() { return false},
+            next: function () {
+                const url = this.apiContext.getFetchURL(
+                    "",
+                    `files/file`,
+                    {
+                        method: "GET",
+                        caller: "kioskview.fetchFileFromApi",
+                    },
+                    "v1",
+                    new URLSearchParams({
+                        uuid: (mode++ % 2 == 0)?"fc23c20c-9365-463e-9262-8964a208fbcb":"74dc05c0-86a6-4a6d-9798-0898a9aec7e8",
+                    })).url;
+                if (url) {
+                    this.url = url
+                    return true
+                }
+                return false
+            }
+        }
+        lightBox.setURLProvider(urlProvider)
+        lightBox.resolutions = ["Best", "8K", "Master", "medium", "small"]
+        lightBox.addEventListener("ResolutionChanged", (() => {
+            alert("Resolution has changed")
+        }))
+        lightBox?.openDialog()
+    }
+
 
 
     protected renderContextSelectorApp() {
@@ -173,6 +217,10 @@ export class TestApp extends KioskApp {
                     <div class="toolbar-button"
                          @click="${this.openLightbox}">
                         <i class="fas fa-dragon"></i>
+                    </div>
+                    <div class="toolbar-button"
+                         @click="${this.openSVGInLightbox}">
+                        <i class="fas fa-dragon" style="color: red"></i>
                     </div>
                     <div class="toolbar-button"
                          style="z-index: 200"

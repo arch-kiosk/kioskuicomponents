@@ -27,8 +27,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "patch and dist": "vite build && npm version patch && npm pack --pack-destination ./dist",
-    "patch and dist Kiosk": "vite build && npm version patch && --mode bundle",
+    "dist npm": "vite build && npm pack --pack-destination ./dist",
+    "dist Kiosk": "vite build --mode bundle",
     "preview": "vite preview",
     "test": "vitest --mode development"
   },

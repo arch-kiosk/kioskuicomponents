@@ -10,6 +10,7 @@ import "./kioskdialog.ts";
 // import "openseadragon";
 import OpenSeadragon from "openseadragon";
 import { OSDSVGOverlay } from "./js/openseadragon-svg-overlay.js";
+import "./js/imaginghelper"
 // import OpenSeadragon from "openseadragon";
 
 export type KioskLightboxFileDirection = "prev" | "next"
@@ -32,11 +33,15 @@ export type KioskLightboxSingleFileOptions = {
     ajaxHeaders?: AnyDict,
     ajaxWithCredentials: boolean
 } | {
-    height: number,
+    tileSource: {
+        height: number,
+        width: number,
+        tileSize: number,
+        minLevel: number,
+        getTileUrl: () => undefined
+    },
     width: number,
-    tileSize: number,
-    minLevel: number,
-    getTileUrl: () => undefined
+    height: number
 }
 
 @customElement("kiosk-lightbox")
@@ -51,7 +56,7 @@ export class KioskLightbox extends KioskAppComponent {
 
     // constructor() {
     // }
-    private viewer?: OpenSeadragon.Viewer & { svgOverlay?: Function } = undefined;
+    private viewer?: OpenSeadragon.Viewer & { svgOverlay?: Function, activateImagingHelper?: Function } = undefined;
 
     /**
      *  a callback that returns the url of the next image to show
@@ -130,28 +135,43 @@ export class KioskLightbox extends KioskAppComponent {
                 crossOriginPolicy: "Anonymous",
             });
 
+            if (this.viewer.activateImagingHelper) {
+                this.viewer.activateImagingHelper({});
+            }
+
             this.viewer.addHandler("open", () => {
+                this.viewer?.setVisible(true)
                 console.log("success");
             });
             this.viewer.addHandler("open-failed", (e) => {
                 const overlay = this.viewer?.svgOverlay ? this.viewer.svgOverlay() : undefined;
                 if (!overlay || !overlay.isVisible()) {
+                    this.viewer?.setVisible(false)
                     this.opened(false, e.message);
+                } else {
+                    console.log("open-failed", e)
                 }
+
             });
             this.viewer.addHandler("tile-load-failed", (e) => {
                 console.log("tile load failure");
                 if (this.firstTile) {
                     const overlay = this.viewer?.svgOverlay ? this.viewer.svgOverlay() : undefined;
                     if (!overlay || !overlay.isVisible()) {
+                        this.viewer?.setVisible(false)
                         this.opened(false, e.message);
+                    } else {
+                        console.log("tile-load-failed", e)
                     }
                 }
                 this.firstTile = false;
             });
             this.viewer.addHandler("tile-loaded", () => {
                 console.log("tile loaded successfully");
-                if (this.firstTile) this.opened(true, "");
+                if (this.firstTile) {
+                    this.opened(true, "");
+                    this.viewer?.setVisible(true)
+                }
                 this.firstTile = false;
             });
             this.viewer.addHandler("rotate", (e: { degrees: number }) => {
@@ -221,14 +241,18 @@ export class KioskLightbox extends KioskAppComponent {
         };
     }
 
-    private getSVGFileOptions(): KioskLightboxSingleFileOptions {
+    private getSVGFileOptions(svgWidth: number, svgHeight: number): KioskLightboxSingleFileOptions {
         return {
-            height: Math.min(window.innerWidth, window.innerHeight) * 2,
-            width: Math.min(window.innerWidth, window.innerHeight) * 2,
-            tileSize: Math.min(window.innerWidth, window.innerHeight) * 2,
-            minLevel: 1,
-            getTileUrl: () => undefined,
-        };
+            tileSource: {
+                height: window.innerHeight * 2,
+                width: window.innerWidth * 2,
+                tileSize: window.innerWidth * 2,
+                minLevel: 1,
+                getTileUrl: () => undefined
+            },
+            width: Math.min(svgWidth*3, window.innerWidth * 2),
+            height: Math.min(svgHeight*3, window.innerHeight * 2)
+        }
     }
 
     private _openFile() {
@@ -274,9 +298,8 @@ export class KioskLightbox extends KioskAppComponent {
                     let singleFileOptions;
 
                     if (this.urlProvider?.fileType && this.urlProvider.fileType.toLowerCase() === "svg") {
-                        singleFileOptions = this.getSVGFileOptions();
                         if (overlay) {
-                            overlay.show();
+                            const self = this
                             this._loadSVG(headerObject, this.urlProvider.url)
                                 .then((svgData) => {
                                     try {
@@ -284,7 +307,13 @@ export class KioskLightbox extends KioskAppComponent {
                                             .parseFromString(svgData, "image/svg+xml").documentElement;
                                         // console.log(svgData)
                                         if (svgElement instanceof SVGElement) {
-                                            overlay.loadSVG(svgElement);
+                                            const svgSize = overlay.loadSVG(svgElement);
+                                            singleFileOptions = this.getSVGFileOptions(svgSize.x, svgSize.y);
+                                            if (self.viewer) {
+                                                self.viewer.open(singleFileOptions);
+                                                // self.viewer.svgOverlay().activateDebugMode()
+                                            }
+                                            overlay.show();
                                         } else {
                                             throw Error("no SVG")
                                         }
@@ -300,9 +329,8 @@ export class KioskLightbox extends KioskAppComponent {
                         }
                     } else {
                         singleFileOptions = this.getDefaultSingleFileOptions(headerObject, this.urlProvider.url);
+                        this.viewer.open(singleFileOptions);
                     }
-
-                    this.viewer.open(singleFileOptions);
 
                     // this.viewer.open(new OpenSeadragon.LegacyTileSource(
                     //     [
@@ -328,6 +356,8 @@ export class KioskLightbox extends KioskAppComponent {
 
     private async _loadSVG(headers: AnyDict, url: string) {
         const response = await fetch(url, { headers: headers, method: "GET" });
+        let size = Number(response.headers.get("content-length"))
+        if (size > 2000000) throw Error("For safety the viewer is not showing SVGs larger than 2MB.")
         return await response.text();
     }
 

@@ -1,6 +1,6 @@
 {
   "name": "@arch-kiosk/kioskuicomponents",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "type": "module",
   "types": "./dist/index.d.ts",
   "main": "./kioskuicomponents.ts",
@@ -33,7 +33,7 @@
     "test": "vitest --mode development"
   },
   "dependencies": {
-    "@arch-kiosk/kiosktsapplib": "^0.3.1",
+    "@arch-kiosk/kiosktsapplib": "^0.3.4",
     "@vaadin/combo-box": "^24.5.5",
     "@vaadin/dialog": "^24.5.5",
     "@vaadin/grid": "^24.5.5",

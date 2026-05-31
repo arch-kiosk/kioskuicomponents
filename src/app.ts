@@ -163,8 +163,9 @@ export class TestApp extends KioskApp {
                     },
                     "v1",
                     new URLSearchParams({
-                        uuid: (mode++ % 2 == 0)?"fc23c20c-9365-463e-9262-8964a208fbcb":"74dc05c0-86a6-4a6d-9798-0898a9aec7e8",
+                        uuid: (mode % 2 == 0)?"fc23c20c-9365-463e-9262-8964a208fbcb":(mode % 3 == 0?"b5f951de-704d-4938-830c-ea42ed1d47ea":"b263c6ee-9259-4c3d-ba37-5d9be9be1737"),
                     })).url;
+                mode++;
                 if (url) {
                     this.url = url
                     return true
@@ -235,10 +236,13 @@ export class TestApp extends KioskApp {
     }
 
     imageOpened(e: CustomEvent) {
-        if (e.detail.result)
-            alert("opened")
-        else
-            alert("open failed")
+        if (e.detail.result) {
+            alert("opened");
+        }
+        else {
+            console.error("open failed", e)
+            alert("open failed");
+        }
     }
 
     imageBeforeOpen( ) {

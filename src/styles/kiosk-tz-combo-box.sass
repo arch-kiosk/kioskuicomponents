@@ -11,12 +11,15 @@ div, p
   --lumo-font-family: $standard-text
   --lumo-size-m: $font-size-standard
   --lumo-contrast-10pct: rgba(0,0,0,0)
-  --lumo-contrast-60pct: var(--col-accent-bg-1)
+  // this is pretty fishy but I don't see a better solution right now to address the toggle button of a combobox
+  --lumo-contrast-60pct: var(--col-primary-bg-btn)
   --lumo-text-field-size: 1em
   --lumo-font-size: var(--font-size-standard)
   --lumo-border-radius-l: 0
   --lumo-border-radius-m: 0
   --lumo-border-radius-s: 0
+//[part$='button']
+//  color: pink
 
 vaadin-combo-box
   margin-left: calc(-1 * (0.375em + var(--lumo-border-radius-m) / 4 - 1px))
@@ -36,9 +39,9 @@ vaadin-combo-box > input:disabled
 vaadin-combo-box
   font-family: $standard-text
   font-size: $font-size-standard
-  color: $col-primary-bg-1
+  color: $col-primary-bg-btn
   //margin-top: .5em
-  background-color: $col-bg-2
+  background-color: $col-bg-btn
   width: 100%
   //margin-left: .5em
   //margin-right: .5em
